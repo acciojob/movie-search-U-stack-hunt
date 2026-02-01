@@ -27,7 +27,7 @@ const App = () => {
       .then((data) => {
         if (data.Response === "False") {
           setMovies([]);
-          setError("Invalid movie name. Please try again");
+          setError("Invalid movie name. Please try again.");
         } else {
           setMovies(data.Search || []);
           setError(null);
@@ -35,7 +35,7 @@ const App = () => {
       })
       .catch((err) => {
         setMovies([]);
-        setError("Invalid movie name. Please try again");
+        setError("Invalid movie name. Please try again.");
       })
       .finally(() => {
         setLoading(false);
