@@ -15,7 +15,7 @@ const App = () => {
 
     if (!query.trim()) {
       setMovies([]);
-      setError("Invalid movie name. Please try again");
+      setError("Invalid movie name. Please try again.");
       return;
     }
 
