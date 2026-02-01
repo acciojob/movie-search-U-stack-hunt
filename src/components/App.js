@@ -6,38 +6,67 @@ import './../styles/App.css';
 
 const App = () => {
   const [movies, setMovies] = useState([]);
-  const [error,setError]=useState(null);
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    setMovies([]);
-    const query = document.getElementById("searchInput").value;
-    fetch(`https://www.omdbapi.com/?s=${query}&apikey=99eb9fd1`)
-      .then(response => response.json())
-      .then(data => {
+  const handleSearch = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+
+    if (!query.trim()) {
+      setMovies([]);
+      setError("Invalid movie name. Please try again");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    fetch(`https://www.omdbapi.com/?s=${encodeURIComponent(query)}&apikey=99eb9fd1`)
+      .then((res) => res.json())
+      .then((data) => {
         if (data.Response === "False") {
+          setMovies([]);
           setError("Invalid movie name. Please try again");
         } else {
-          setError(null);
           setMovies(data.Search || []);
+          setError(null);
         }
+      })
+      .catch((err) => {
+        setMovies([]);
+        setError("Invalid movie name. Please try again");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
     <div className="App">
       <h1>Search Movie</h1>
-      <input id="searchInput" type="text" placeholder="Enter movie name" />
-      <button id="searchButton" onClick={() => handleSearch()}>Search</button>
+      <form onSubmit={handleSearch}>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Enter movie name"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button id="searchButton" type="submit">Search</button>
+      </form>
+
       <div id="movieList">
         {error && <p className="error">{error}</p>}
-        {movies.map((movie, index) => (
-          <ul key={index} className="movieItem">
-            <i>
+        {loading && <p>Loading...</p>}
+        <ul>
+          {movies.map((movie, index) => (
+            <li key={index} className="movieItem">
               <h3>{movie.Title} ({movie.Year})</h3>
               {movie.Poster !== "N/A" && <img src={movie.Poster} alt={movie.Title} />}
-            </i>
-          </ul>
-        ))}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

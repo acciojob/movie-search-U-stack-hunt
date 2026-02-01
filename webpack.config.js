@@ -34,6 +34,9 @@ module.exports = {
             template: "./src/index.html"
         })
     ],
+    watchOptions: {
+        ignored: ['**/node_modules/**', '**/DumpStack.log.tmp']
+    },
     resolve: {
         extensions: ['.js', '.jsx'],
     }
